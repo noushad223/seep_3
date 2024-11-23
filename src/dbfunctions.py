@@ -109,11 +109,10 @@ CREATE TABLE IF NOT EXISTS MarkingSchemes (
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS Autochecker (
     coursework_id INTEGER NOT NULL,
-    marking_scheme_id INTEGER NOT NULL,
     autochecker_marks REAL DEFAULT NULL,
+    autochecker_comments TEXT NOT NULL,
     FOREIGN KEY (coursework_id) REFERENCES Courseworks (coursework_id),
-    FOREIGN KEY (marking_scheme_id) REFERENCES MarkingSchemes (marking_scheme_id),
-    PRIMARY KEY (coursework_id, marking_scheme_id)
+    PRIMARY KEY (coursework_id)
 );
 """)
 

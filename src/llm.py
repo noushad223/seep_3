@@ -50,6 +50,7 @@ def get_coursework(id):
         }
     return None
 
+# Fetch marking schene content for processing
 def get_marking_scheme(id):
     cursor.execute("""
         SELECT marking_scheme_id, module_id, marking_scheme_content 
@@ -66,7 +67,19 @@ def get_marking_scheme(id):
         }
     return None
 
-def text_splitter(essay_text): # Text splitter to prevent token limit from being hit when using LLMs
+def update_coursework_marks(cursor, coursework_id, final_marks, final_comments):
+    query = """
+    UPDATE Autochecker
+    SET 
+        autochecker_marks = ?,
+        autochecker_comments = ? 
+    WHERE 
+        coursework_id = ?;
+    """
+    cursor.execute(query, (final_marks, final_comments, coursework_id))
+
+# Text splitter to prevent token limit from being hit when using LLMs
+def text_splitter(essay_text): 
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1000,  # Adjust to the token limit of the model
         chunk_overlap=200  # Ensure overlap for context continuity
@@ -74,12 +87,13 @@ def text_splitter(essay_text): # Text splitter to prevent token limit from being
     chunks = text_splitter.split_text(essay_text)
     return chunks
 
+# Sentiment analysis, useful in english essays/coursework for emotional tone of the essay
 # Values for get_embedding looks like this
 # 1) negative 0.7389
 # 2) neutral 0.2174
 # 3) positive 0.0437
 
-def get_embedding(text): # Sentiment analysis, useful in english essays/coursework for emotional tone of the essay
+def get_embedding(text): 
     formatted_values = []
     MODEL = f"cardiffnlp/twitter-roberta-base-sentiment-latest"
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
@@ -99,6 +113,7 @@ def get_embedding(text): # Sentiment analysis, useful in english essays/coursewo
         formatted_values.append(f"{i+1}) {l} {np.round(float(s), 4)}")
     return "\n".join(formatted_values) 
 
+# Template build for evaluating essay in chunks
 def chunk_evaluation_chain():
     prompt = PromptTemplate.from_template("""
     You are an autochecker, designed to evaluate whether an essay has been marked too harshly or too lightly.
@@ -123,6 +138,7 @@ def chunk_evaluation_chain():
     """)
     return prompt
 
+# Final marks and feedback for summarising essay as a whole
 def feedback_evaluation():
     prompt = PromptTemplate.from_template("""
     Based on the following feedback for essay chunks:
@@ -140,6 +156,7 @@ def feedback_evaluation():
     """)
     return prompt
 
+# Main function to process courseworks
 def process_coursework(coursework_id, marking_scheme_id):
     
     openAI_Model = OpenAI()
@@ -158,6 +175,7 @@ def process_coursework(coursework_id, marking_scheme_id):
         essay_text = coursework_data["coursework_content"]
         # Process essay_text into chunks of 1000 characters
         chunks = text_splitter(essay_text)
+
         # Process each chunk
         for chunk in chunks:
             sentiment = get_embedding(chunk)
@@ -179,7 +197,7 @@ def process_coursework(coursework_id, marking_scheme_id):
         ])
 
 
-            # Generate final evaluation
+        # Generate final evaluation
         chain2 = feedback_prompt | openAI_Model | final_parser
         final_feedback = chain2.invoke({
             "chained_feedback": formatted_feedback
@@ -189,15 +207,15 @@ def process_coursework(coursework_id, marking_scheme_id):
         final_comments = final_feedback.comments
 
         # Update database
-        update_coursework_marks(coursework_id, final_marks)
-        insert_feedback(coursework_id, final_comments)
+        update_coursework_marks(coursework_id, final_marks, final_comments)
         return f"Processed coursework {coursework_id} successfully."
     return f"Coursework {coursework_id} not found."
 
-coursework_ids = get_all_courseworks_ids()
+def process_all_courseworks():
+    coursework_ids = get_all_courseworks_ids()
 
-with ThreadPoolExecutor(max_workers=4) as executor:  # Adjust max_workers as needed
-    results = list(executor.map(process_coursework, coursework_ids))
+    with ThreadPoolExecutor(max_workers=4) as executor:  # Adjust max_workers as needed
+        results = list(executor.map(process_coursework, coursework_ids))
 
-for result in results:
-    print(result)
+    for result in results:
+        print(result)
