@@ -1,4 +1,3 @@
-import sqlite3
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import OpenAI
@@ -10,10 +9,9 @@ from transformers import AutoTokenizer, AutoConfig
 import numpy as np
 from scipy.special import softmax
 from concurrent.futures import ThreadPoolExecutor
+from dbfunctions import *
 
 OPENAI_API_KEY = ""
-connection = sqlite3.connect("university.db")
-cursor = connection.cursor()
 
 class ChunkEvaluation(BaseModel):
     score: int = Field(description="Score from 0-100")
@@ -24,59 +22,6 @@ class FinalEvaluation(BaseModel):
     overall_score: int = Field(description="Final score from 0-100")
     comments: str = Field(description="Summary of overall evaluation")
     chunk_evaluations: List[ChunkEvaluation] = Field(description="List of individual chunk evaluations")
-
-def get_all_courseworks_ids(): # Database function, gets all coursework ids
-    cursor.execute("""
-        SELECT coursework_id FROM Courseworks WHERE coursework_marks IS NULL;
-    """)
-    results = cursor.fetchall()
-    return [row[0] for row in results]
-
-# Fetch coursework content for processing
-def get_coursework(id):
-    cursor.execute("""
-        SELECT student_uuid, module_id, coursework_id, coursework_content 
-        FROM Courseworks 
-        WHERE coursework_id = ?;
-    """, (id,))
-    result = cursor.fetchone()
-    if result:
-        student_uuid, module_id, coursework_id, coursework_content = result
-        return {
-            "student_uuid": student_uuid,
-            "module_id": module_id,
-            "coursework_id": coursework_id,
-            "coursework_content": coursework_content,
-        }
-    return None
-
-# Fetch marking schene content for processing
-def get_marking_scheme(id):
-    cursor.execute("""
-        SELECT marking_scheme_id, module_id, marking_scheme_content 
-        FROM MarkingSchemes
-        WHERE marking_scheme_id = ?;
-    """, (id,))
-    result = cursor.fetchone()
-    if result:
-        marking_scheme_id, module_id, marking_scheme_content = result
-        return {
-            "marking_scheme_id": marking_scheme_id,
-            "module_id": module_id,
-            "marking_scheme_content": marking_scheme_content,
-        }
-    return None
-
-def update_coursework_marks(cursor, coursework_id, final_marks, final_comments):
-    query = """
-    UPDATE Autochecker
-    SET 
-        autochecker_marks = ?,
-        autochecker_comments = ? 
-    WHERE 
-        coursework_id = ?;
-    """
-    cursor.execute(query, (final_marks, final_comments, coursework_id))
 
 # Text splitter to prevent token limit from being hit when using LLMs
 def text_splitter(essay_text): 

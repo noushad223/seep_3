@@ -1,0 +1,7 @@
+README.md
+setup.py
+src/FRONT_SEPP_3.egg-info/PKG-INFO
+src/FRONT_SEPP_3.egg-info/SOURCES.txt
+src/FRONT_SEPP_3.egg-info/dependency_links.txt
+src/FRONT_SEPP_3.egg-info/top_level.txt
+tests/test_llm.py
