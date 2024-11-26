@@ -163,6 +163,3 @@ def process_all_courseworks():
 
     for result in results:
         print(result)
-
-
-

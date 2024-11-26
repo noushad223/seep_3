@@ -1,12 +1,14 @@
 import sqlite3
+from pdfscanner import extract_text_from_pdf
 
 def db_conn():
     # Open and return a connection to the database
     return sqlite3.connect("university.db")
 
-def insert_coursework_data(student_uuid, module_id, coursework_id, coursework_content):
+def insert_coursework_data(student_uuid, module_id, coursework_id, pdf_path): 
     # Use the database connection and cursor
     connection = db_conn()  # Get the connection
+    coursework_content = extract_text_from_pdf(pdf_path) # Get the coursework content via pdf file name
     try:
         cursor = connection.cursor()  # Get a cursor from the connection
         query = """
