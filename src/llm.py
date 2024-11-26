@@ -11,7 +11,7 @@ from scipy.special import softmax
 from concurrent.futures import ThreadPoolExecutor
 from dbfunctions import *
 
-OPENAI_API_KEY = ""
+OPENAI_API_KEY = "api-key"
 
 class ChunkEvaluation(BaseModel):
     score: int = Field(description="Score from 0-100")
@@ -141,7 +141,6 @@ def process_coursework(coursework_id, marking_scheme_id):
             for i, eval in enumerate(chunk_evaluations)
         ])
 
-
         # Generate final evaluation
         chain2 = feedback_prompt | openAI_Model | final_parser
         final_feedback = chain2.invoke({
@@ -159,8 +158,11 @@ def process_coursework(coursework_id, marking_scheme_id):
 def process_all_courseworks():
     coursework_ids = get_all_courseworks_ids()
 
-    with ThreadPoolExecutor(max_workers=4) as executor:  # Adjust max_workers as needed
+    with ThreadPoolExecutor(max_workers=4) as executor:  
         results = list(executor.map(process_coursework, coursework_ids))
 
     for result in results:
         print(result)
+
+
+

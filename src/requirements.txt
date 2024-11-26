@@ -1,0 +1,10 @@
+langchain
+langchain-core
+langchain-openai
+pydantic
+transformers
+numpy
+scipy
+torch
+pytest 
+pytest-mock
