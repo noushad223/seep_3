@@ -111,3 +111,46 @@ def update_coursework_marks(coursework_id, final_marks, final_comments):
         print(f"An error occurred: {e}")
     finally:
         connection.close()  # Ensure connection is closed
+
+# Checks which coursework needs a re-evaluation
+def evaluate_coursework():
+    connection = db_conn()
+    try:
+        cursor = connection.cursor()
+        query = """
+        SELECT 
+            cw.coursework_id, 
+            cw.coursework_marks, 
+            ac.autochecker_marks, 
+            ac.autochecker_comments
+        FROM 
+            Courseworks cw
+        JOIN 
+            Autochecker ac
+        ON 
+            cw.coursework_id = ac.coursework_id
+        """
+        # Execute the query and fetch results
+        cursor.execute(query)
+        results = cursor.fetchall()
+        # Evaluate each coursework
+        output = []
+        for coursework_id, coursework_marks, autochecker_marks, autochecker_comments in results:
+            # Calculate the difference
+            difference = abs(coursework_marks - autochecker_marks)
+
+            # Determine the status
+            if difference > 10:
+                status = "Harsh" if coursework_marks > autochecker_marks else "Lenient"
+                output.append({
+                    "coursework_id": coursework_id,
+                    "status": status,
+                    "coursework_marks": coursework_marks,
+                    "autochecker_marks": autochecker_marks,
+                    "autochecker_comments": autochecker_comments
+                })
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+    finally:
+        connection.close()  # Ensure connection is closed
+    return output

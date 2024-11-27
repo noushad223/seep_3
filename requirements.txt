@@ -8,3 +8,4 @@ scipy
 torch
 pytest 
 pytest-mock
+pypdf
