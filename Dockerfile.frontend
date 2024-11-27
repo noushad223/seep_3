@@ -1,9 +1,0 @@
-FROM node:20-slim
-
-WORKDIR /app
-
-# No need to copy package.json or run npm install as we'll use local node_modules
-
-EXPOSE 3000
-
-CMD ["npm", "run", "dev"]
