@@ -1,0 +1,11 @@
+FROM node:20-slim
+
+WORKDIR /app
+
+COPY front/package*.json ./
+
+COPY front/ .
+
+EXPOSE 5173
+
+CMD ["npm", "run", "dev", "--", "--host"]

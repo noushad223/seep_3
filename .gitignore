@@ -55,3 +55,7 @@ __pycache__/
 # Ignore system-specific files
 
 Thumbs.db
+
+# Docker
+.docker
+docker-compose.override.yml
