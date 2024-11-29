@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
-Name: FRONT_SEPP_3
-Version: 0.1.0
+Name: seep_3
+Version: 0.0.0
 Platform: unix
 Platform: linux
 Platform: osx
@@ -16,7 +16,7 @@ Classifier: Programming Language :: Python :: 3.10
 Classifier: Programming Language :: Python :: 3.11
 Classifier: Programming Language :: Python :: 3.12
 Classifier: Programming Language :: Python :: 3.13
-Requires-Python: >=3.7
+Requires-Python: >=3.6
 Requires-Dist: langchain
 Requires-Dist: langchain-core
 Requires-Dist: langchain-openai
