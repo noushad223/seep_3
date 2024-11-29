@@ -1,8 +1,13 @@
 <script>
+    import { goto } from '$app/navigation';
+    
     let email = '';
     let password = '';
 
     const handleSubmit = () => {
+        // Here you would typically handle authentication
+        // For now, we'll just navigate to dashboard
+        goto('/dashboard');
     };
 </script>
 
