@@ -10,8 +10,9 @@ import numpy as np
 from scipy.special import softmax
 from concurrent.futures import ThreadPoolExecutor
 from dbfunctions import *
+import os
 
-OPENAI_API_KEY = "api-key"
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', 'default-invalid-key')
 
 class ChunkEvaluation(BaseModel):
     score: int = Field(description="Score from 0-100")
