@@ -23,14 +23,16 @@ def insert_coursework_data(student_uuid, module_id, coursework_id, pdf_path):
         connection.close()  # Ensure connection is closed
 
 # Fetch all coursework IDs where marks are NULL
-def get_all_courseworks_ids():
+def get_all_courseworks_ids(module_id):
     connection = db_conn()
     try:
         cursor = connection.cursor()
         query = """
-        SELECT coursework_id FROM Courseworks WHERE coursework_marks IS NULL;
+        SELECT coursework_id 
+        FROM Courseworks 
+        WHERE coursework_marks IS NULL AND module_id = ?;
         """
-        cursor.execute(query)
+        cursor.execute(query, (module_id,))  # Pass the module_id as a parameter
         results = cursor.fetchall()
         return [row[0] for row in results]  # Extract coursework IDs from results
     except sqlite3.Error as e:
@@ -80,17 +82,53 @@ def get_marking_scheme(marking_scheme_id):
         result = cursor.fetchone()
         if result:
             marking_scheme_id, module_id, marking_scheme_content = result
-            return {
-                "marking_scheme_id": marking_scheme_id,
-                "module_id": module_id,
-                "marking_scheme_content": marking_scheme_content,
-            }
+            return marking_scheme_content
         return None
     except sqlite3.Error as e:
         print(f"An error occurred: {e}")
         return None
     finally:
         connection.close()  # Ensure connection is closed
+
+def remain_marks(coursework_id):
+    connection = db_conn()
+    try:
+        cursor = connection.cursor()
+        query = """
+        UPDATE Autochecker
+        SET autochecker_marks = (
+            SELECT coursework_marks
+            FROM Courseworks
+            WHERE coursework_id = ?
+        )
+        WHERE coursework_id = ?
+        """
+        cursor.execute(query, (coursework_id, coursework_id))
+        connection.commit()
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        connection.close()
+
+def change_marks(coursework_id):
+    connection = db_conn()
+    try:
+        cursor = connection.cursor()
+        query = """
+        UPDATE Courseworks
+        SET coursework_marks = (
+            SELECT autochecker_marks
+            FROM Autochecker
+            WHERE coursework_id = ?
+        )
+        WHERE coursework_id = ?
+        """
+        cursor.execute(query, (coursework_id, coursework_id))
+        connection.commit()
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        connection.close()
 
 # Update coursework marks
 def update_coursework_marks(coursework_id, final_marks, final_comments):
