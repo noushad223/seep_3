@@ -21,7 +21,7 @@ export const submitData = async (data) => {
  */
 export const evaluateCourseworks = async () => {
     try {
-        const response = await apiClient.post('/evaluate');
+        const response = await apiClient.post(`/dashboard/evaluate`);
         console.log('Evaluated courseworks:', response.data);
         return response.data;
     } catch (error) {
@@ -36,9 +36,9 @@ export const evaluateCourseworks = async () => {
  * @param {string} courseworkId - The ID of the coursework to update.
  * @returns {Promise<void>}
  */
-export const acceptAutoMark = async (courseworkId) => {
+export const acceptAutoMark = async (moduleId, courseworkId) => {
     try {
-        await apiClient.post('/acceptautomark', { courseworkId });
+        await apiClient.post(`${moduleId}/${courseworkId}/acceptautomark`);
         console.log('Accept autochecker marks.');
     } catch (error) {
         console.error('Error accepting autochecker marks:', error);
@@ -52,9 +52,9 @@ export const acceptAutoMark = async (courseworkId) => {
  * @param {string} courseworkId - The ID of the coursework to update.
  * @returns {Promise<void>}
  */
-export const denyAutoMark = async (courseworkId) => {
+export const denyAutoMark = async (moduleId, courseworkId) => {
     try {
-        await apiClient.post('/denyautomark', { courseworkId });
+        await apiClient.post(`${moduleId}/${courseworkId}/denyautomark`);
         console.log('Deny autochecker marks.');
     } catch (error) {
         console.error('Error denying autochecker marks:', error);
