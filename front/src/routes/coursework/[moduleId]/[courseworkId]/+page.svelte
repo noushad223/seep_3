@@ -89,10 +89,9 @@
                 <div class="bg-white rounded-lg p-6 shadow-sm">
                     <h2 class="text-lg font-medium text-gray-900 mb-4">Feedback</h2>
                     <div class="space-y-4">
-                        <textarea
-                            bind:value={$coursework.feedback}
-                            class="w-full h-32 rounded-lg border-gray-300 focus:ring-red-500 focus:border-red-500"
-                        ></textarea>
+                        <p class="text-gray-700">
+                            {$coursework.feedback}
+                        </p>
                         <div class="flex justify-end space-x-4">
                             <button
                                 on:click={() => acceptAutomarker()}
