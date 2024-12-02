@@ -9,7 +9,7 @@
         content: "/EDR.pdf",
         marks: {
             teacher: 85,
-            auto: 82
+            auto: 52
         },
         status: "Needs Review",
         feedback: "This is a hardcoded example of English coursework feedback. Make sure to focus on improving the structure and clarity of your arguments."
@@ -31,7 +31,7 @@
 
 <div class="min-h-screen bg-gray-50">
     <div class="fixed top-0 left-0 right-0 bg-white shadow-sm z-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center bg-red-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center">
             <a href="/dashboard" class="text-slate-600 hover:text-slate-900" aria-label="Back to Dashboard">
                 <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
