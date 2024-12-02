@@ -1,5 +1,6 @@
 <script lang="ts">
     import { page } from '$app/stores';
+    import { goto } from '$app/navigation';
     import { derived } from 'svelte/store';
 
     const coursework = derived(page, ($page) => ({
@@ -17,10 +18,12 @@
 
     function rejectAutomarker() {
         console.log('Feedback submitted:');
+        goto('/dashboard');
     }
 
     function acceptAutomarker() {
         console.log('Marked as reviewed');
+        goto('/dashboard');
     }
 
     const discrepancy = derived(coursework, ($coursework) => {
