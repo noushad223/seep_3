@@ -10,8 +10,9 @@ import numpy as np
 from scipy.special import softmax
 from concurrent.futures import ThreadPoolExecutor
 from dbfunctions import *
+import os
 
-OPENAI_API_KEY = "api-key"
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', 'default-invalid-key')
 
 class ChunkEvaluation(BaseModel):
     score: int = Field(description="Score from 0-100")
@@ -102,14 +103,13 @@ def feedback_evaluation():
     return prompt
 
 # Main function to process courseworks
-def process_coursework(coursework_id, marking_scheme_id):
+def process_coursework(coursework_id, marking_scheme):
     
     openAI_Model = OpenAI()
     chunk_parser = PydanticOutputParser(pydantic_object=ChunkEvaluation)
     final_parser = PydanticOutputParser(pydantic_object=FinalEvaluation)
     
     coursework_data = get_coursework(coursework_id)
-    marking_scheme = get_marking_scheme(marking_scheme_id)
     chunk_evaluations = []  # Renamed for clarity
     
     prompt = chunk_evaluation_chain()
@@ -155,11 +155,12 @@ def process_coursework(coursework_id, marking_scheme_id):
         return f"Processed coursework {coursework_id} successfully."
     return f"Coursework {coursework_id} not found."
 
-def process_all_courseworks():
-    coursework_ids = get_all_courseworks_ids()
+def process_all_courseworks(module_id, marking_scheme_id):
+    coursework_ids = get_all_courseworks_ids(module_id)
+    marking_scheme = get_marking_scheme(marking_scheme_id)
 
     with ThreadPoolExecutor(max_workers=4) as executor:  
-        results = list(executor.map(process_coursework, coursework_ids))
+        results = list(executor.map(process_coursework, coursework_ids, marking_scheme))
 
     for result in results:
         print(result)

@@ -1,7 +1,11 @@
 README.md
+pyproject.toml
+setup.cfg
 setup.py
 src/FRONT_SEPP_3.egg-info/PKG-INFO
 src/FRONT_SEPP_3.egg-info/SOURCES.txt
 src/FRONT_SEPP_3.egg-info/dependency_links.txt
+src/FRONT_SEPP_3.egg-info/not-zip-safe
+src/FRONT_SEPP_3.egg-info/requires.txt
 src/FRONT_SEPP_3.egg-info/top_level.txt
 tests/test_llm.py
