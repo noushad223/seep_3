@@ -9,3 +9,8 @@ torch
 pytest 
 pytest-mock
 pypdf
+fastapi
+Jinja2
+uvicorn
+py-grpc-prometheus
+prometheus_client
