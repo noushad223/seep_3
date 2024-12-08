@@ -43,7 +43,7 @@ next-env.d.ts
 venv/
 
 # Ignore database files (adjust extensions if necessary)
-*.db
+#*.db
 *.sqlite
 *.sqlite3
 
