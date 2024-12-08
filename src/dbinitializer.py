@@ -1,7 +1,7 @@
 import sqlite3
 
 # Create a database connection
-conn = sqlite3.connect("university.sql")
+conn = sqlite3.connect("university.db")
 cursor = conn.cursor()
 
 # Permissions Table
