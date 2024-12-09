@@ -5,6 +5,7 @@ from prometheus_client import Counter, Histogram, generate_latest
 from dbfunctions import evaluate_coursework, remain_marks, change_marks
 from llm import process_all_courseworks
 import logging
+from typing import List
 
 app = FastAPI()
 
